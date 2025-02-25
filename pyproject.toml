@@ -1,0 +1,10 @@
+[project]
+name = "hexlet-code"
+version = "0.1.0"
+description = "Compares two configuration files and shows a difference"
+authors = [
+	{name = 'farguz', email = 'aaaaa@bbb.cc'}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
