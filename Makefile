@@ -12,7 +12,7 @@ package-uninstall:
 	uv tool uninstall hexlet-code
 
 gendiff:
-	uv run gendiff
+	uv run gendiff gendiff/test_files/file1.json gendiff/test_files/file2.json
 
 lint:
 	uv run ruff check gendiff
