@@ -1,0 +1,28 @@
+import json
+
+
+def generate_diff(file_path1: str, file_path2: str) -> str:
+    first_file = json.load(open(file_path1))
+    second_file = json.load(open(file_path2))
+
+    res = {}
+
+    for k1 in first_file.keys():
+        if k1 in second_file.keys():
+            if first_file[k1] == second_file[k1]:
+                res['  ' + k1] = first_file[k1]
+            else:
+                res['- ' + k1] = first_file[k1]
+                res['+ ' + k1] = second_file[k1]
+        else:
+            res['- ' + k1] = first_file[k1]
+
+    for k2, v2 in second_file.items():
+        if k2 not in first_file.keys():
+            res['+ ' + k2] = second_file[k2]
+
+    res_sorted = dict(sorted(res.items(), key=lambda x: x[0][2:]))
+    res_sorted_json = json.dumps(res_sorted)
+    res_sorted_json = res_sorted_json.replace(',', '\n')
+    print(res_sorted_json)
+    return res_sorted_json
