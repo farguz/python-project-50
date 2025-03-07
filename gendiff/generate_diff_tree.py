@@ -7,6 +7,10 @@ def open_json_file(file_path) -> dict:
 
 
 def get_value_str(dict, key):
+    if dict.get(key) is True:
+        return 'true'
+    if dict.get(key) is False:
+        return 'false'
     return str(dict.get(key, None))
 
 
