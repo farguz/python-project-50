@@ -17,13 +17,13 @@ gendiff:
 lint:
 	uv run ruff check gendiff
 
-lint-with-fix:
+lint-with-fix:	
 	uv run ruff check --fix gendiff
 
 test:
 	uv run pytest
 
 test-coverage:
-	uv run pytest --cov=hexlet_python_package --cov-report xml
+	uv run pytest --cov=gendiff --cov-report xml
 
 check: test lint
