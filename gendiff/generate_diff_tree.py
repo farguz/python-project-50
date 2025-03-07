@@ -1,47 +1,39 @@
 import json
 
+import yaml
+
+from gendiff.formatter import plain
+
 
 def open_json_file(file_path) -> dict:
     json_dict = json.load(open(file_path))
     return json_dict
 
 
-def get_value_str(dict, key):
-    if dict.get(key) is True:
-        return 'true'
-    if dict.get(key) is False:
-        return 'false'
-    return str(dict.get(key, None))
+def open_yml_file(file_path) -> dict:
+    yml_dict = yaml.load(open(file_path), yaml.CLoader)
+    return yml_dict
+
+
+def check_file_extension(path: str) -> str:
+    extension = path.split('.')[-1].lower()
+    return extension
 
 
 def generate_diff_json(file_path1: str, file_path2: str) -> str:
-    first_file = open_json_file(file_path1)
-    second_file = open_json_file(file_path2)
+    first_file_extension = check_file_extension(file_path1)
+    second_file_extension = check_file_extension(file_path2)
 
-    first_keys = list(first_file)
-    second_keys = list(second_file)
-    all_keys = list(set(first_keys + second_keys))
-    all_keys.sort()
-    
-    res = ''
+    if first_file_extension == 'json':
+        first_file = open_json_file(file_path1)
+    elif first_file_extension == 'yml' or first_file_extension == 'yaml':
+        first_file = open_yml_file(file_path1)
+    if second_file_extension == 'json':
+        second_file = open_json_file(file_path2)
+    elif second_file_extension == 'yml' or second_file_extension == 'yaml':
+        second_file = open_yml_file(file_path2)
 
-    for key in all_keys:
-        if get_value_str(first_file, key) == get_value_str(second_file, key):
-            res += ('    ' + key + ': ' + 
-                    get_value_str(first_file, key) + '\n')
-        else:
-            if key in first_keys and key in second_keys:
-                res += ('  - ' + key + ': ' + 
-                        get_value_str(first_file, key) + '\n')
-                res += ('  + ' + key + ': ' + 
-                get_value_str(second_file, key) + '\n')            
-            elif key in first_keys:
-                res += ('  - ' + key + ': ' + 
-                        get_value_str(first_file, key) + '\n')        
-            else:
-                res += ('  + ' + key + ': ' + 
-                        get_value_str(second_file, key) + '\n')
-
-    res = '{\n' + res + '}'
+    res = plain(first_file, second_file)
     print(res)
     return res
+    

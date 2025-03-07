@@ -12,3 +12,16 @@ def test_generate_diff_json():
   + timeout: 20
   + verbose: true
 }"""
+
+
+def test_generate_diff_yml():
+    path1 = 'gendiff/tests/test_files/file1.yml'
+    path2 = 'gendiff/tests/test_files/file2.yml'
+    assert generate_diff_json(path1, path2) == """{
+  - follow: false
+    host: hexlet.io
+  - proxy: 123.234.53.22
+  - timeout: 50
+  + timeout: 20
+  + verbose: true
+}"""
