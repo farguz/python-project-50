@@ -2,21 +2,25 @@
 
 
 def stylish(diff_tree: dict) -> str:
-    def walk(element):
+    depth = 1
+    replacer = '===='
+    def walk(element, depth):
+        res = '{'
         for k, v in element.items():
             if v['type'] == 'added':
-                print(f' + {k}: {v['value']}')
+                res += (f'\n {replacer * depth} + {k}: {v['value']}')
             elif v['type'] == 'deleted':
-                print(f' - {k}: {v['value']}')
+                res += (f'\n {replacer * depth} - {k}: {v['value']}')
             elif v['type'] == 'changed':
-                print(f' - {k}: {v['old_value']}')
-                print(f' + {k}: {v['new_value']}')
+                res += (f'\n {replacer * depth} - {k}: {v['old_value']}')
+                res += (f'\n {replacer * depth} + {k}: {v['new_value']}')
             elif v['type'] == 'unchanged':
-                print(f' * {k}: {v['value']}')
+                res += (f'\n {replacer * depth} * {k}: {v['value']}')
             elif v['type'] == 'nested':
-                print(f' * {k}: {walk(v['value'])}')
+                res += (f'\n {replacer * depth} * {k}: {walk(v['value'], depth + 1)}')
+        return res
 
-    return walk(diff_tree)
+    return walk(diff_tree, depth)
 
 '''for key in all_keys:
         if get_value_str(first_file, key) == get_value_str(second_file, key):
