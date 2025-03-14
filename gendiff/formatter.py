@@ -1,20 +1,24 @@
-def get_value_str(dict, key):
-    if dict.get(key) is True:
-        return 'true'
-    if dict.get(key) is False:
-        return 'false'
-    return str(dict.get(key))
-    
-    
-def plain(first_file, second_file):
-    first_keys = list(first_file)
-    second_keys = list(second_file)
-    all_keys = list(set(first_keys + second_keys))
-    all_keys.sort()
-    
-    res = ''
+# from generate_diff_tree import generate_diff_tree, get_value_str 
 
-    for key in all_keys:
+
+def stylish(diff_tree: dict) -> str:
+    def walk(element):
+        for k, v in element.items():
+            if v['type'] == 'added':
+                print(f' + {k}: {v['value']}')
+            elif v['type'] == 'deleted':
+                print(f' - {k}: {v['value']}')
+            elif v['type'] == 'changed':
+                print(f' - {k}: {v['old_value']}')
+                print(f' + {k}: {v['new_value']}')
+            elif v['type'] == 'unchanged':
+                print(f' * {k}: {v['value']}')
+            elif v['type'] == 'nested':
+                print(f' * {k}: {walk(v['value'])}')
+
+    return walk(diff_tree)
+
+'''for key in all_keys:
         if get_value_str(first_file, key) == get_value_str(second_file, key):
             res += ('    ' + key + ': ' + 
                     get_value_str(first_file, key) + '\n')
@@ -32,5 +36,4 @@ def plain(first_file, second_file):
                         get_value_str(second_file, key) + '\n')
 
     res = '{\n' + res + '}'
-
-    return res
+    return res'''
