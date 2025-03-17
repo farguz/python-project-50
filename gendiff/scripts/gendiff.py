@@ -5,8 +5,7 @@ from gendiff.formatter import stylish
 
 def main():
     args = parsing()
-    diff_tree = generate_diff_tree(args.first_file, args.second_file)
-    print(diff_tree)
+    diff_tree = generate_diff_tree(args.first_file, args.second_file, args.format)
     print(stylish(diff_tree))
     
 
