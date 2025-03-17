@@ -165,6 +165,7 @@ right_answer_not_nested = '''{
   + verbose: true
 }'''
 
+
 def test_generate_formatter_stylish_nested():
     assert stylish(test_tree_nested) == right_answer_nested
 

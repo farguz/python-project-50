@@ -1,4 +1,3 @@
-from gendiff.scripts import generate_diff_tree
 
 right_answer = """{
   - follow: false

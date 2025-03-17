@@ -19,7 +19,6 @@ def stylish(diff_tree: dict) -> str:
         else:
             return str(value)
 
-
     def walk(element, depth):
         res = ''
         for k, v in element.items():

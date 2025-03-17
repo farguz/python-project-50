@@ -57,7 +57,7 @@ def generate_diff_tree(file_path1: str, file_path2: str, format: str) -> str:
                 else:
                     res[key] = {
                     'type': 'changed',
-                    'old_value': get_value(first_file, key),    
+                    'old_value': get_value(first_file, key), 
                     'new_value': get_value(second_file, key)
                     }
                 

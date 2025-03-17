@@ -1,6 +1,6 @@
+from gendiff.formatter import stylish
 from gendiff.generate_diff_tree import generate_diff_tree
 from gendiff.parser import parsing
-from gendiff.formatter import stylish
 
 
 def main():
