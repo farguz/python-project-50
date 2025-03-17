@@ -3,14 +3,8 @@ import json
 import yaml
 
 
-def get_value_str(dict, key):
-    if dict.get(key) is True:
-        return 'true'
-    if dict.get(key) is False:
-        return 'false'
-    if dict.get(key) is None:
-        return 'null'
-    return str(dict.get(key))
+def get_value(dict, key):
+    return dict.get(key)
 
 
 def open_json_file(file_path) -> dict:
@@ -50,32 +44,32 @@ def generate_diff_tree(file_path1: str, file_path2: str) -> str:
         res = {}
         for key in all_keys:
             if key in first_keys and key in second_keys:
-                if get_value_str(first_file, key) == get_value_str(second_file, key):
+                if get_value(first_file, key) == get_value(second_file, key):
                     res[key] = {
                         'type': 'unchanged',
-                        'value': get_value_str(first_file, key)                
+                        'value': get_value(first_file, key)                
                     }
                 elif type(first_file[key]) == dict and type(second_file[key]) == dict:
                     res[key] = {
                     'type': 'nested',
-                    'value': inner(first_file.get(key), second_file.get(key))
+                    'children': [{k: v} for k, v in inner(first_file.get(key), second_file.get(key)).items()]
                     }
                 else:
                     res[key] = {
                     'type': 'changed',
-                    'old_value': get_value_str(first_file, key),    
-                    'new_value': get_value_str(second_file, key)
+                    'old_value': get_value(first_file, key),    
+                    'new_value': get_value(second_file, key)
                     }
                 
             elif key in first_keys:
                 res[key] = {
                 'type': 'deleted',
-                'value': get_value_str(first_file, key)
+                'value': get_value(first_file, key)
                 }
             else:
                 res[key] = {
                 'type': 'added',
-                'value': get_value_str(second_file, key)
+                'value': get_value(second_file, key)
                 }
         return res
 

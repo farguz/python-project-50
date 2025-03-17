@@ -1,43 +1,42 @@
-# from generate_diff_tree import generate_diff_tree, get_value_str 
+# from generate_diff_tree import generate_diff_tree, get_value 
 
 
 def stylish(diff_tree: dict) -> str:
     depth = 1
-    replacer = '===='
+    replacer = '    '
+    
+    def is_dict(value, depth):
+        if isinstance(value, dict):
+            res = '{\n'
+            for k, v in value.items(): 
+                res += f'{replacer * (depth)}{k}: {is_dict(v, depth + 1)}\n'
+            res += f'{replacer * (depth - 1)}}}'
+            return res
+        elif isinstance(value, bool):
+            return str(value).lower()
+        elif value is None:
+            return 'null'
+        else:
+            return str(value)
+
+
     def walk(element, depth):
-        res = '{'
+        res = ''
         for k, v in element.items():
             if v['type'] == 'added':
-                res += (f'\n {replacer * depth} + {k}: {v['value']}')
+                res += (f'{replacer * (depth - 1)}  + {k}: {is_dict(v["value"], depth + 1)}\n')
             elif v['type'] == 'deleted':
-                res += (f'\n {replacer * depth} - {k}: {v['value']}')
+                res += (f'{replacer * (depth - 1)}  - {k}: {is_dict(v["value"], depth + 1)}\n')
             elif v['type'] == 'changed':
-                res += (f'\n {replacer * depth} - {k}: {v['old_value']}')
-                res += (f'\n {replacer * depth} + {k}: {v['new_value']}')
+                res += (f'{replacer * (depth - 1)}  - {k}: {is_dict(v["old_value"], depth + 1)}\n')
+                res += (f'{replacer * (depth - 1)}  + {k}: {is_dict(v["new_value"], depth + 1)}\n')
             elif v['type'] == 'unchanged':
-                res += (f'\n {replacer * depth} * {k}: {v['value']}')
+                res += (f'{replacer * (depth - 1)}    {k}: {is_dict(v["value"], depth + 1)}\n')
             elif v['type'] == 'nested':
-                res += (f'\n {replacer * depth} * {k}: {walk(v['value'], depth + 1)}')
+                res += (f'{replacer * (depth - 1)}    {k}: {{\n')
+                for child in v['children']:
+                    res += walk(child, depth + 1)
+                res += f'{replacer * (depth)}}}\n'
         return res
 
-    return walk(diff_tree, depth)
-
-'''for key in all_keys:
-        if get_value_str(first_file, key) == get_value_str(second_file, key):
-            res += ('    ' + key + ': ' + 
-                    get_value_str(first_file, key) + '\n')
-        else:
-            if key in first_keys and key in second_keys:
-                res += ('  - ' + key + ': ' + 
-                        get_value_str(first_file, key) + '\n')
-                res += ('  + ' + key + ': ' + 
-                get_value_str(second_file, key) + '\n')            
-            elif key in first_keys:
-                res += ('  - ' + key + ': ' + 
-                        get_value_str(first_file, key) + '\n')        
-            else:
-                res += ('  + ' + key + ': ' + 
-                        get_value_str(second_file, key) + '\n')
-
-    res = '{\n' + res + '}'
-    return res'''
+    return '{\n' + walk(diff_tree, depth) + '}'
