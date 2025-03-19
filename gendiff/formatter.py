@@ -1,4 +1,9 @@
 # from generate_diff_tree import generate_diff_tree, get_value 
+def choose_format(diff_tree: dict, format: str):
+    if format == 'plain':
+        return plain(diff_tree)
+    elif format == 'stylish':
+        return stylish(diff_tree)
 
 
 def stylish(diff_tree: dict) -> str:
@@ -39,3 +44,37 @@ def stylish(diff_tree: dict) -> str:
         return res
 
     return '{\n' + walk(diff_tree, depth) + '}'
+
+
+def plain(diff_tree: dict) -> str:
+    def check_type(element):
+        if isinstance(element, dict) or isinstance(element, list) or isinstance(element, set):
+            return '[complex value]'
+        
+        if isinstance(element, bool):
+            return f"{str(element).lower()}"
+        
+        if element is None:
+            return 'null'
+        
+        return f"'{str(element)}'"
+    
+    def walk(element, path=''):
+        res = ''
+        for k, v in element.items():
+            new_path = path + '.' + str(k) if path else str(k)
+
+            if v['type'] == 'added':
+                res += (f"Property '{new_path}' was added with value: {check_type(v["value"])}\n")
+            elif v['type'] == 'deleted':
+                res += (f"Property '{new_path}' was removed\n")
+            elif v['type'] == 'changed':
+                res += (f"Property '{new_path}' was updated. From {check_type(v["old_value"])} to {check_type(v["new_value"])}\n")
+            elif v['type'] == 'unchanged':
+                pass
+            elif v['type'] == 'nested':
+                for child in v['children']:
+                    res += walk(child, new_path)
+
+        return res
+    return walk(diff_tree)

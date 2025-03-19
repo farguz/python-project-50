@@ -154,7 +154,29 @@ right_answer_nested = '''{
     }
 }'''
 
-test_tree_not_nested = {'follow': {'type': 'deleted', 'value': False}, 'host': {'type': 'unchanged', 'value': 'hexlet.io'}, 'proxy': {'type': 'deleted', 'value': '123.234.53.22'}, 'timeout': {'type': 'changed', 'old_value': 50, 'new_value': 20}, 'verbose': {'type': 'added', 'value': True}}
+test_tree_not_nested = {
+    'follow': {
+        'type': 'deleted',
+        'value': False
+    },
+    'host': {
+        'type': 'unchanged',
+        'value': 'hexlet.io'
+    },
+    'proxy': {
+        'type': 'deleted',
+        'value': '123.234.53.22'
+    },
+    'timeout': {
+        'type': 'changed',
+        'old_value': 50,
+        'new_value': 20
+    },
+    'verbose': {
+        'type': 'added',
+        'value': True
+    }
+}
 
 right_answer_not_nested = '''{
   - follow: false

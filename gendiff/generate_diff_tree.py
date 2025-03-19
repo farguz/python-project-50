@@ -49,10 +49,14 @@ def generate_diff_tree(file_path1: str, file_path2: str, format: str) -> str:
                         'type': 'unchanged',
                         'value': get_value(first_file, key)                
                     }
-                elif type(first_file[key]) == dict and type(second_file[key]) == dict:
+                elif (isinstance(first_file[key], dict) and 
+                      isinstance(second_file[key], dict)):
+
                     res[key] = {
                     'type': 'nested',
-                    'children': [{k: v} for k, v in inner(first_file.get(key), second_file.get(key)).items()]
+                    'children': [{k: v} for k, v in
+                                 inner(first_file.get(key), 
+                                       second_file.get(key)).items()]
                     }
                 else:
                     res[key] = {

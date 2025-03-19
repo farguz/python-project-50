@@ -4,4 +4,4 @@
 gendiff app  
 Compares two configuration files and shows a difference.
   
-[![asciicast](https://asciinema.org/a/nIkBM9l7a9LSYv5WfkchN618q.svg)](https://asciinema.org/a/nIkBM9l7a9LSYv5WfkchN618q)
+[![asciicast](https://asciinema.org/a/wzoQUDV71tkscW6M2X8YGSGa4.svg)](https://asciinema.org/a/wzoQUDV71tkscW6M2X8YGSGa4)
