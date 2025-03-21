@@ -6,12 +6,12 @@ from gendiff.parser import parsing
 def generate_diff(first_file: str, second_file: str, format: str='stylish'):
     
     diff_tree = generate_diff_tree(first_file, second_file, format)
-    print(choose_format(diff_tree, format))
+    choose_format(diff_tree, format)
 
 
 def main():
     args = parsing()
-    generate_diff(args.first_file, args.second_file, args.format)
+    print(generate_diff(args.first_file, args.second_file, args.format))
     
 
 if __name__ == '__main()__':
