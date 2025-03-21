@@ -26,8 +26,6 @@ def stylish(diff_tree: dict) -> str:
             return res
         elif isinstance(value, bool):
             return str(value).lower()
-        elif isinstance(value, int):
-            return value
         elif value is None:
             return 'null'
         else:
@@ -68,6 +66,9 @@ def plain(diff_tree: dict) -> str:
         
         if element is None:
             return 'null'
+        
+        if isinstance(element, int):
+            return f"{element}"
         
         return f"'{str(element)}'"
     
