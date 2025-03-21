@@ -6,7 +6,7 @@ from gendiff.parser import parsing
 def generate_diff(first_file: str, second_file: str, format: str='stylish'):
     
     diff_tree = generate_diff_tree(first_file, second_file, format)
-    choose_format(diff_tree, format)
+    return choose_format(diff_tree, format)
 
 
 def main():
