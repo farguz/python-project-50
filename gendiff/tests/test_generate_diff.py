@@ -1,28 +1,21 @@
+import pytest
 
-right_answer = """{
-  - follow: false
-    host: hexlet.io
-  - proxy: 123.234.53.22
-  - timeout: 50
-  + timeout: 20
-  + verbose: true
-}"""
-
-'''def test_generate_diff_json():
-    path1 = 'gendiff/tests/test_files/file1.json'
-    path2 = 'gendiff/tests/test_files/file2.json'
-    assert generate_diff_tree(path1, path2) == right_answer
+from gendiff.generate_diff_tree import (
+    check_file_extension,
+    get_value,
+)
 
 
-def test_generate_diff_yml():
-    path1 = 'gendiff/tests/test_files/file1.yml'
-    path2 = 'gendiff/tests/test_files/file2.yml'
-    assert generate_diff_tree(path1, path2) == right_answer'''
+@pytest.mark.parametrize("test_input, expected",
+                         [([{'key': 'abc'}, 'key'], 'abc'),
+                          ([{}, ''], None),
+                          ([{'key': 'abc'}, 'no_key'], None)])
+def test_get_value(test_input, expected):
+    assert get_value(*test_input) == expected
 
 
-def test_generate_diff_json_nested():
-    pass
-
-
-def test_generate_diff_yml_nested():
-    pass
+@pytest.mark.parametrize("test_input, expected",
+                         [('test_file.yml', 'yml'),
+                          ('', None)])
+def test_check_file_extension(test_input, expected):
+    assert check_file_extension(test_input) == expected

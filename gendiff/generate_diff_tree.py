@@ -8,16 +8,22 @@ def get_value(dict, key):
 
 
 def open_json_file(file_path) -> dict:
+    if file_path == '':
+        return None
     json_dict = json.load(open(file_path))
     return json_dict
 
 
 def open_yml_file(file_path) -> dict:
+    if file_path == '':
+        return None
     yml_dict = yaml.load(open(file_path), yaml.CLoader)
     return yml_dict
 
 
 def check_file_extension(path: str) -> str:
+    if path == '':
+        return None
     extension = path.split('.')[-1].lower()
     return extension
 

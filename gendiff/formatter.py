@@ -1,15 +1,22 @@
-# from generate_diff_tree import generate_diff_tree, get_value 
+import json
+
+
 def choose_format(diff_tree: dict, format: str):
     if format == 'plain':
         return plain(diff_tree)
     elif format == 'stylish':
         return stylish(diff_tree)
+    elif format == 'json':
+        return json_format(diff_tree)
 
 
 def stylish(diff_tree: dict) -> str:
     depth = 1
     replacer = '    '
     
+    if diff_tree == {}:
+        return ''
+
     def is_dict(value, depth):
         if isinstance(value, dict):
             res = '{\n'
@@ -47,6 +54,9 @@ def stylish(diff_tree: dict) -> str:
 
 
 def plain(diff_tree: dict) -> str:
+    if diff_tree == {}:
+        return ''
+
     def check_type(element):
         if isinstance(element, dict) or isinstance(element, list) or isinstance(element, set):
             return '[complex value]'
@@ -77,4 +87,8 @@ def plain(diff_tree: dict) -> str:
                     res += walk(child, new_path)
 
         return res
-    return walk(diff_tree)
+    return walk(diff_tree).strip('\n')
+
+
+def json_format(diff_tree: dict) -> str:
+    return json.dumps(diff_tree)
