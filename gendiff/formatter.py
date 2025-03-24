@@ -56,18 +56,18 @@ def stylish(diff_tree: dict) -> str:
         for k, v in element.items():
             if v['type'] == 'added':
                 res += (f"{replacer * (depth - 1)}  + " + 
-                        f"{k}: {is_dict(v["value"], depth + 1)}\n")
+                        f"{k}: {is_dict(v['value'], depth + 1)}\n")
             elif v['type'] == 'deleted':
                 res += (f"{replacer * (depth - 1)}  - " + 
-                         f"{k}: {is_dict(v["value"], depth + 1)}\n")
+                         f"{k}: {is_dict(v['value'], depth + 1)}\n")
             elif v['type'] == 'changed':
                 res += (f"{replacer * (depth - 1)}  - " + 
-                        f"{k}: {is_dict(v["old_value"], depth + 1)}\n")
+                        f"{k}: {is_dict(v['old_value'], depth + 1)}\n")
                 res += (f"{replacer * (depth - 1)}  + " + 
-                        f"{k}: {is_dict(v["new_value"], depth + 1)}\n")
+                        f"{k}: {is_dict(v['new_value'], depth + 1)}\n")
             elif v['type'] == 'unchanged':
                 res += (f"{replacer * (depth - 1)}    " + 
-                        f"{k}: {is_dict(v["value"], depth + 1)}\n")
+                        f"{k}: {is_dict(v['value'], depth + 1)}\n")
             elif v['type'] == 'nested':
                 res += (f"{replacer * (depth - 1)}    " + 
                         f"{k}: {{\n")
@@ -90,13 +90,13 @@ def plain(diff_tree: dict) -> str:
 
             if v['type'] == 'added':
                 res += (f"Property '{new_path}' was added " + 
-                        f"with value: {check_type(v["value"])}\n")
+                        f"with value: {check_type(v['value'])}\n")
             elif v['type'] == 'deleted':
                 res += (f"Property '{new_path}' was removed\n")
             elif v['type'] == 'changed':
                 res += (f"Property '{new_path}' was updated. From " + 
-                        f"{check_type(v["old_value"])} to " + 
-                        f"{check_type(v["new_value"])}\n")
+                        f"{check_type(v['old_value'])} to " + 
+                        f"{check_type(v['new_value'])}\n")
             elif v['type'] == 'unchanged':
                 pass
             elif v['type'] == 'nested':
