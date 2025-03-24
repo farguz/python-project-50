@@ -3,7 +3,7 @@ from gendiff.generate_diff_tree import generate_diff_tree
 from gendiff.parser import parsing
 
 
-def generate_diff(first_file: str, second_file: str, format: str='stylish'):
+def generate_diff(first_file: str, second_file: str, format: str = 'stylish'):
     
     diff_tree = generate_diff_tree(first_file, second_file, format)
     return choose_format(diff_tree, format)

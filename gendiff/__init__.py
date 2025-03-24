@@ -5,7 +5,6 @@ from gendiff.formatter import stylish as stylish
 from gendiff.generate_diff_tree import generate_diff_tree as generate_diff_tree
 from gendiff.scripts.gendiff import generate_diff as generate_diff
 
-
 __all__ = ('generate_diff_tree',
            'json_format',
            'stylish',

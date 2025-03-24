@@ -28,7 +28,7 @@ def check_file_extension(path: str) -> str:
     return extension
 
 
-def generate_diff_tree(file_path1: str, file_path2: str, format: str='stylish') -> str:
+def generate_diff_tree(file_path1, file_path2, format='stylish') -> str:
     first_file_extension = check_file_extension(file_path1)
     second_file_extension = check_file_extension(file_path2)
 
