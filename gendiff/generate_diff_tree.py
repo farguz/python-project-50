@@ -28,18 +28,19 @@ def check_file_extension(path: str) -> str:
     return extension
 
 
-def generate_diff_tree(file_path1, file_path2, format='stylish') -> str:
-    first_file_extension = check_file_extension(file_path1)
-    second_file_extension = check_file_extension(file_path2)
+def open_file(path: str):
+    file_extension = check_file_extension(path)
 
-    if first_file_extension == 'json':
-        first_file = open_json_file(file_path1)
-    elif first_file_extension == 'yml' or first_file_extension == 'yaml':
-        first_file = open_yml_file(file_path1)
-    if second_file_extension == 'json':
-        second_file = open_json_file(file_path2)
-    elif second_file_extension == 'yml' or second_file_extension == 'yaml':
-        second_file = open_yml_file(file_path2)
+    if file_extension == 'json':
+        return open_json_file(path)
+    elif file_extension in ['yml', 'yaml']:
+        return open_yml_file(path)
+
+
+def generate_diff_tree(file_path1, file_path2, format='stylish') -> str:
+    
+    first_file = open_file(file_path1)
+    second_file = open_file(file_path2)
 
     def inner(first_file, second_file):
         first_keys = list(first_file)

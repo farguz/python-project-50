@@ -8,28 +8,48 @@ def choose_format(diff_tree: dict, format: str = 'stylish'):
         return stylish(diff_tree)
     elif format == 'json':
         return json_format(diff_tree)
+    
+
+def check_type(element):
+    if (isinstance(element, dict) or 
+        isinstance(element, list) or 
+        isinstance(element, set)):
+        return '[complex value]'
+        
+    if isinstance(element, bool):
+        return f"{str(element).lower()}"
+        
+    if element is None:
+        return 'null'
+        
+    if isinstance(element, int):
+        return f"{element}"
+        
+    return f"'{str(element)}'"
+
+
+def is_dict(value, depth):
+    if isinstance(value, dict):
+        res = '{\n'
+        for k, v in value.items(): 
+            res += f'{replacer * (depth)}{k}: {is_dict(v, depth + 1)}\n'
+        res += f'{replacer * (depth - 1)}}}'
+        return res
+    elif isinstance(value, bool):
+        return str(value).lower()
+    elif value is None:
+        return 'null'
+    else:
+        return str(value)
 
 
 def stylish(diff_tree: dict) -> str:
     depth = 1
+    global replacer
     replacer = '    '
     
     if diff_tree == {}:
         return ''
-
-    def is_dict(value, depth):
-        if isinstance(value, dict):
-            res = '{\n'
-            for k, v in value.items(): 
-                res += f'{replacer * (depth)}{k}: {is_dict(v, depth + 1)}\n'
-            res += f'{replacer * (depth - 1)}}}'
-            return res
-        elif isinstance(value, bool):
-            return str(value).lower()
-        elif value is None:
-            return 'null'
-        else:
-            return str(value)
 
     def walk(element, depth):
         res = ''
@@ -63,23 +83,6 @@ def plain(diff_tree: dict) -> str:
     if diff_tree == {}:
         return ''
 
-    def check_type(element):
-        if (isinstance(element, dict) or 
-            isinstance(element, list) or 
-            isinstance(element, set)):
-            return '[complex value]'
-        
-        if isinstance(element, bool):
-            return f"{str(element).lower()}"
-        
-        if element is None:
-            return 'null'
-        
-        if isinstance(element, int):
-            return f"{element}"
-        
-        return f"'{str(element)}'"
-    
     def walk(element, path=''):
         res = ''
         for k, v in element.items():
