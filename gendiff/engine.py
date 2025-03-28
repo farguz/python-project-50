@@ -2,6 +2,10 @@ import json
 
 import yaml
 
+from gendiff.formatters.json_formatter import json_format
+from gendiff.formatters.plain_formatter import plain
+from gendiff.formatters.stylish_formatter import stylish
+
 
 def get_value(dict, key):
     return dict.get(key)
@@ -85,3 +89,12 @@ def generate_diff_tree(file_path1, file_path2, format='stylish') -> str:
         return res
 
     return inner(first_file, second_file)
+
+
+def choose_format(diff_tree: dict, format: str = 'stylish'):
+    if format == 'plain':
+        return plain(diff_tree)
+    elif format == 'stylish':
+        return stylish(diff_tree)
+    elif format == 'json':
+        return json_format(diff_tree)

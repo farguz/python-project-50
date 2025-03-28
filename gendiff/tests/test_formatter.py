@@ -1,7 +1,6 @@
 import pytest
 
-from gendiff.formatter import choose_format
-from gendiff.generate_diff_tree import generate_diff_tree
+from gendiff.engine import choose_format, generate_diff_tree
 
 
 @pytest.fixture

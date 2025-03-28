@@ -1,6 +1,6 @@
 import pytest
 
-from gendiff.generate_diff_tree import (
+from gendiff.engine import (
     check_file_extension,
     get_value,
 )
