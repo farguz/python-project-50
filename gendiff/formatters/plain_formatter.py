@@ -2,18 +2,37 @@ def check_type(element):
     if (isinstance(element, dict) or 
         isinstance(element, list) or 
         isinstance(element, set)):
-        return '[complex value]'
+        res = '[complex value]'
+        
+    if isinstance(element, str):
+        res = f"'{str(element)}'"
         
     if isinstance(element, bool):
         return f"{str(element).lower()}"
         
     if element is None:
-        return 'null'
+        res = 'null'
         
-    if isinstance(element, int):
-        return f"{element}"
+    if (isinstance(element, int) or 
+        isinstance(element, float)):
+        res = f"{element}"
         
-    return f"'{str(element)}'"
+    return res
+
+
+def format_added(v, new_path):
+    return (f"Property '{new_path}' was added " + 
+            f"with value: {check_type(v['value'])}\n")
+
+
+def format_deleted(v, new_path):
+    return (f"Property '{new_path}' was removed\n")
+
+
+def format_changed(v, new_path):
+    return (f"Property '{new_path}' was updated. From " + 
+            f"{check_type(v['old_value'])} to " + 
+            f"{check_type(v['new_value'])}\n")
 
 
 def plain(diff_tree: dict) -> str:
@@ -26,14 +45,11 @@ def plain(diff_tree: dict) -> str:
             new_path = path + '.' + str(k) if path else str(k)
 
             if v['type'] == 'added':
-                res += (f"Property '{new_path}' was added " + 
-                        f"with value: {check_type(v['value'])}\n")
+                res += format_added(v, new_path)
             elif v['type'] == 'deleted':
-                res += (f"Property '{new_path}' was removed\n")
+                res += format_deleted(v, new_path)
             elif v['type'] == 'changed':
-                res += (f"Property '{new_path}' was updated. From " + 
-                        f"{check_type(v['old_value'])} to " + 
-                        f"{check_type(v['new_value'])}\n")
+                res += format_changed(v, new_path)
             elif v['type'] == 'unchanged':
                 pass
             elif v['type'] == 'nested':

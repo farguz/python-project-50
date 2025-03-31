@@ -1,16 +1,44 @@
-def is_dict(value, depth):
+def dict_check(value, depth):
     if isinstance(value, dict):
         res = '{\n'
         for k, v in value.items(): 
-            res += f'{replacer * (depth)}{k}: {is_dict(v, depth + 1)}\n'
+            res += f'{replacer * (depth)}{k}: {dict_check(v, depth + 1)}\n'
         res += f'{replacer * (depth - 1)}}}'
-        return res
     elif isinstance(value, bool):
-        return str(value).lower()
+        res = str(value).lower()
     elif value is None:
-        return 'null'
+        res = 'null'
     else:
-        return str(value)
+        res = str(value)
+    return res
+
+
+def format_added(k, v, depth):
+    return (f"{replacer * (depth - 1)}  + " + 
+            f"{k}: {dict_check(v['value'], depth + 1)}\n")
+
+
+def format_deleted(k, v, depth):
+    return (f"{replacer * (depth - 1)}  - " + 
+            f"{k}: {dict_check(v['value'], depth + 1)}\n")
+
+
+def format_changed(k, v, depth):
+    old_value = (f"{replacer * (depth - 1)}  - " + 
+                 f"{k}: {dict_check(v['old_value'], depth + 1)}\n")
+    new_value = (f"{replacer * (depth - 1)}  + " + 
+                 f"{k}: {dict_check(v['new_value'], depth + 1)}\n")
+    return old_value, new_value
+
+
+def format_unchenged(k, v, depth):
+    return (f"{replacer * (depth - 1)}    " + 
+            f"{k}: {dict_check(v['value'], depth + 1)}\n")
+
+
+def format_nested(k, v, depth):
+    return (f"{replacer * (depth - 1)}    " + 
+            f"{k}: {{\n")
 
 
 def stylish(diff_tree: dict) -> str:
@@ -25,22 +53,16 @@ def stylish(diff_tree: dict) -> str:
         res = ''
         for k, v in element.items():
             if v['type'] == 'added':
-                res += (f"{replacer * (depth - 1)}  + " + 
-                        f"{k}: {is_dict(v['value'], depth + 1)}\n")
+                res += format_added(k, v, depth)
             elif v['type'] == 'deleted':
-                res += (f"{replacer * (depth - 1)}  - " + 
-                         f"{k}: {is_dict(v['value'], depth + 1)}\n")
+                res += format_deleted(k, v, depth)
             elif v['type'] == 'changed':
-                res += (f"{replacer * (depth - 1)}  - " + 
-                        f"{k}: {is_dict(v['old_value'], depth + 1)}\n")
-                res += (f"{replacer * (depth - 1)}  + " + 
-                        f"{k}: {is_dict(v['new_value'], depth + 1)}\n")
+                res += format_changed(k, v, depth)[0]
+                res += format_changed(k, v, depth)[1]
             elif v['type'] == 'unchanged':
-                res += (f"{replacer * (depth - 1)}    " + 
-                        f"{k}: {is_dict(v['value'], depth + 1)}\n")
+                res += format_unchenged(k, v, depth)
             elif v['type'] == 'nested':
-                res += (f"{replacer * (depth - 1)}    " + 
-                        f"{k}: {{\n")
+                res += format_nested(k, v, depth)
                 for child in v['children']:
                     res += walk(child, depth + 1)
                 res += f'{replacer * (depth)}}}\n'
