@@ -1,7 +1,5 @@
 def check_type(element):
-    if (isinstance(element, dict) or 
-        isinstance(element, list) or 
-        isinstance(element, set)):
+    if isinstance(element, (dict, list, set)):
         res = '[complex value]'
         
     if isinstance(element, str):
@@ -13,8 +11,7 @@ def check_type(element):
     if element is None:
         res = 'null'
         
-    if (isinstance(element, int) or 
-        isinstance(element, float)):
+    if isinstance(element, (int, float)):
         res = f"{element}"
         
     return res
