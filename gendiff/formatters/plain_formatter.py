@@ -32,26 +32,28 @@ def format_changed(v, new_path):
             f"{check_type(v['new_value'])}\n")
 
 
+def walk(element, path=''):
+    res = ''
+    for k, v in element.items():
+        new_path = path + '.' + str(k) if path else str(k)
+
+        if v['type'] == 'added':
+            res += format_added(v, new_path)
+        elif v['type'] == 'deleted':
+            res += format_deleted(v, new_path)
+        elif v['type'] == 'changed':
+            res += format_changed(v, new_path)
+        elif v['type'] == 'nested':
+            for child in v['children']:
+                res += walk(child, new_path)
+        '''elif v['type'] == 'unchanged':
+            pass'''
+
+    return res
+
+
 def plain(diff_tree: dict) -> str:
     if diff_tree == {}:
         return ''
 
-    def walk(element, path=''):
-        res = ''
-        for k, v in element.items():
-            new_path = path + '.' + str(k) if path else str(k)
-
-            if v['type'] == 'added':
-                res += format_added(v, new_path)
-            elif v['type'] == 'deleted':
-                res += format_deleted(v, new_path)
-            elif v['type'] == 'changed':
-                res += format_changed(v, new_path)
-            elif v['type'] == 'unchanged':
-                pass
-            elif v['type'] == 'nested':
-                for child in v['children']:
-                    res += walk(child, new_path)
-
-        return res
     return walk(diff_tree).strip('\n')

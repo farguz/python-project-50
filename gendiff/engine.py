@@ -49,33 +49,39 @@ def get_all_keys_sorted(first_file, second_file):
     return first_keys, second_keys, all_keys
 
 
-def create_tree(first_keys,
-                second_keys,
-                all_keys,
-                first_file,
+def both_keys_exist(res, key, first_file, second_file):
+    if get_value(first_file, key) == get_value(second_file, key):
+        res[key] = {
+            'type': 'unchanged',
+            'value': get_value(first_file, key)
+            }
+    elif (isinstance(first_file[key], dict) and 
+          isinstance(second_file[key], dict)):
+        res[key] = {
+            'type': 'nested',
+            'children': [{k: v} for k, v in
+                         create_tree(first_file.get(key),
+                               second_file.get(key)).items()]
+                               }
+    else:
+        res[key] = {
+            'type': 'changed',
+            'old_value': get_value(first_file, key),
+            'new_value': get_value(second_file, key)
+            }
+
+
+def create_tree(first_file,
                 second_file):
+    
+    first_keys, second_keys, all_keys = (
+        get_all_keys_sorted(first_file, second_file)
+        )
+    
     res = {}
     for key in all_keys:
         if key in first_keys and key in second_keys:
-            if get_value(first_file, key) == get_value(second_file, key):
-                res[key] = {
-                    'type': 'unchanged',
-                    'value': get_value(first_file, key)                
-                }
-            elif (isinstance(first_file[key], dict) and 
-                  isinstance(second_file[key], dict)):
-                res[key] = {
-                'type': 'nested',
-                'children': [{k: v} for k, v in 
-                             inner(first_file.get(key),
-                                   second_file.get(key)).items()]
-                                   }
-            else:
-                res[key] = {
-                'type': 'changed',
-                'old_value': get_value(first_file, key), 
-                'new_value': get_value(second_file, key)
-                }
+            both_keys_exist(res, key, first_file, second_file)
                 
         elif key in first_keys:
             res[key] = {
@@ -90,20 +96,12 @@ def create_tree(first_keys,
     return res
 
 
-def inner(first_file, second_file):
-    first_keys, second_keys, all_keys = (
-        get_all_keys_sorted(first_file, second_file)
-        )
-    return create_tree(first_keys, second_keys, all_keys, 
-                       first_file, second_file)
-
-
 def generate_diff_tree(file_path1, file_path2, format='stylish') -> str:
     
     first_file = open_file(file_path1)
     second_file = open_file(file_path2)
 
-    return inner(first_file, second_file)
+    return create_tree(first_file, second_file)
 
 
 def choose_format(diff_tree: dict, format: str = 'stylish'):
