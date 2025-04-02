@@ -32,22 +32,31 @@ def format_changed(v, new_path):
             f"{check_type(v['new_value'])}\n")
 
 
-def walk(element, path=''):
-    res = ''
-    for k, v in element.items():
-        new_path = path + '.' + str(k) if path else str(k)
+def recurse_nested(v, new_path):
+    inner_res = ''
+    for child in v['children']:
+        inner_res += walk_tree(child, new_path)
+    return inner_res
 
-        if v['type'] == 'added':
-            res += format_added(v, new_path)
-        elif v['type'] == 'deleted':
-            res += format_deleted(v, new_path)
-        elif v['type'] == 'changed':
-            res += format_changed(v, new_path)
-        elif v['type'] == 'nested':
-            for child in v['children']:
-                res += walk(child, new_path)
+def formatting_all_labels(res, k, v, path):
+    new_path = path + '.' + str(k) if path else str(k)
+    
+    if v['type'] == 'added':
+        res += format_added(v, new_path)
+    elif v['type'] == 'deleted':
+        res += format_deleted(v, new_path)
+    elif v['type'] == 'changed':
+        res += format_changed(v, new_path)
+    elif v['type'] == 'nested':
+        res += recurse_nested(v, new_path)
         '''elif v['type'] == 'unchanged':
             pass'''
+    return res
+
+def walk_tree(element, path=''):
+    res = ''
+    for k, v in element.items():
+        res = formatting_all_labels(res, k, v, path)
 
     return res
 
@@ -56,4 +65,4 @@ def plain(diff_tree: dict) -> str:
     if diff_tree == {}:
         return ''
 
-    return walk(diff_tree).strip('\n')
+    return walk_tree(diff_tree).strip('\n')

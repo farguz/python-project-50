@@ -71,6 +71,20 @@ def both_keys_exist(res, key, first_file, second_file):
             }
 
 
+def add_label_deleted(res, key, first_file):
+    res[key] = {
+        'type': 'deleted',
+        'value': get_value(first_file, key)
+        }
+    
+
+def add_label_added(res, key, second_file):
+    res[key] = {
+        'type': 'added',
+        'value': get_value(second_file, key)
+        }
+    
+
 def create_tree(first_file,
                 second_file):
     
@@ -84,15 +98,11 @@ def create_tree(first_file,
             both_keys_exist(res, key, first_file, second_file)
                 
         elif key in first_keys:
-            res[key] = {
-            'type': 'deleted',
-            'value': get_value(first_file, key)
-            }
+            add_label_deleted(res, key, first_file)
+
         else:
-            res[key] = {
-            'type': 'added',
-            'value': get_value(second_file, key)
-            }
+            add_label_added(res, key, second_file)
+
     return res
 
 

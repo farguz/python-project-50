@@ -46,23 +46,34 @@ def format_nested(k, v, depth):
             f"{k}: {{\n")
 
 
-def walk(element, depth):
+def recurse_nested(k, v, depth):
+    inner_res = ''
+    inner_res += format_nested(k, v, depth)
+    for child in v['children']:
+        inner_res += walk_tree(child, depth + 1)
+    inner_res += f'{indent * (depth)}}}\n'
+    return inner_res
+
+
+def formatting_all_labels(res, k, v, depth):
+    if v['type'] == 'added':
+        res += format_added(k, v, depth)
+    elif v['type'] == 'deleted':
+        res += format_deleted(k, v, depth)
+    elif v['type'] == 'changed':
+        res += format_changed(k, v, depth)[0]
+        res += format_changed(k, v, depth)[1]
+    elif v['type'] == 'unchanged':
+        res += format_unchanged(k, v, depth)
+    elif v['type'] == 'nested':
+        res += recurse_nested(k, v, depth)
+    return res
+
+
+def walk_tree(element, depth):
     res = ''
     for k, v in element.items():
-        if v['type'] == 'added':
-            res += format_added(k, v, depth)
-        elif v['type'] == 'deleted':
-            res += format_deleted(k, v, depth)
-        elif v['type'] == 'changed':
-            res += format_changed(k, v, depth)[0]
-            res += format_changed(k, v, depth)[1]
-        elif v['type'] == 'unchanged':
-            res += format_unchanged(k, v, depth)
-        elif v['type'] == 'nested':
-            res += format_nested(k, v, depth)
-            for child in v['children']:
-                res += walk(child, depth + 1)
-            res += f'{indent * (depth)}}}\n'
+        res = formatting_all_labels(res, k, v, depth)
     return res
 
 
@@ -74,4 +85,4 @@ def stylish(diff_tree: dict) -> str:
     if diff_tree == {}:
         return ''
 
-    return '{\n' + walk(diff_tree, depth) + '}'
+    return '{\n' + walk_tree(diff_tree, depth) + '}'
