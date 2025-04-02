@@ -38,6 +38,7 @@ def recurse_nested(v, new_path):
         inner_res += walk_tree(child, new_path)
     return inner_res
 
+
 def formatting_all_labels(res, k, v, path):
     new_path = path + '.' + str(k) if path else str(k)
     
@@ -52,6 +53,7 @@ def formatting_all_labels(res, k, v, path):
         '''elif v['type'] == 'unchanged':
             pass'''
     return res
+
 
 def walk_tree(element, path=''):
     res = ''
