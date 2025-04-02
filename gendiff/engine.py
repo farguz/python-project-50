@@ -85,23 +85,34 @@ def add_label_added(res, key, second_file):
         }
     
 
+def walk_tree(first_file, second_file, key, res):
+    first_keys, second_keys = (
+        get_all_keys_sorted(first_file, second_file)[0],
+        get_all_keys_sorted(first_file, second_file)[1]
+        )
+    
+    if key in first_keys and key in second_keys:
+        both_keys_exist(res, key, first_file, second_file)
+                
+    elif key in first_keys:
+        add_label_deleted(res, key, first_file)
+
+    else:
+        add_label_added(res, key, second_file)
+
+    return res
+
+
 def create_tree(first_file,
                 second_file):
     
-    first_keys, second_keys, all_keys = (
-        get_all_keys_sorted(first_file, second_file)
+    all_keys = (
+        get_all_keys_sorted(first_file, second_file)[2]
         )
     
     res = {}
     for key in all_keys:
-        if key in first_keys and key in second_keys:
-            both_keys_exist(res, key, first_file, second_file)
-                
-        elif key in first_keys:
-            add_label_deleted(res, key, first_file)
-
-        else:
-            add_label_added(res, key, second_file)
+        res = walk_tree(first_file, second_file, key, res)
 
     return res
 
